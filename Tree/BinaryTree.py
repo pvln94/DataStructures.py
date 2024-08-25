@@ -1,78 +1,87 @@
 class Node:
-    def __init__(self, element, left=None, right=None):
-        self.element = element
-        self.left = left
-        self.right = right
+    def __init__(self,v):
+        self.l = None
+        self.v = v
+        self.r = None 
 
-class BinaryTree:
-    def __init__(self, root=None):
-        self.root = root
+def IN(n):
+    if n:
+        IN(n.l)
+        print(n.v,end=" ")
+        IN(n.r)
+def PRE(n):
+    if n:
+        print(n.v,end=" ")
+        PRE(n.l)
+        PRE(n.r)
+def POST(n):
+    if n:
+        POST(n.l)
+        POST(n.r)
+        print(n.v,end=" ")
+def c(n):
+    if n is None:
+        return 0
+    return 1+c(n.l)+c(n.r) 
+def H(n):
+    if n is None:
+        return 0
+    left=H(n.l)
+    right=H(n.r)
+    return max(left,right)+1 
 
-    def maketree(self, element, left_tree=None, right_tree=None):
-        self.root = Node(element, left_tree.root if left_tree else None, right_tree.root if right_tree else None)
+def isFull(n):
+    if n is None:
+        return 1
+    if n.l is None and n.r is None:
+        return 1
+    if n.l is not None and n.r is not None:
+        return (isFull(n.l)) and (isFull(n.r))
+    return 0    
 
-    def inorder(self, node):
-        if node:
-            self.inorder(node.left)
-            print(node.element, end=' ')
-            self.inorder(node.right)
+def isPerfect(n,d,level=0):
+    if n is None:
+        return 1
+    if n.l is None and n.r is None:
+        return d == level+1 
+    if n.l is None or n.r is None:
+        return 0 
+    return isPerfect(n.l,d,level+1) and  isPerfect(n.r,d,level+1)
 
-    def preorder(self, node):
-        if node:
-            print(node.element, end=' ')
-            self.preorder(node.left)
-            self.preorder(node.right)
+def isComplete(n,index,c):
+    if n is None:
+        return 1
+    if index>=c:
+        return 0
+    return isComplete(n.l,2*index+1,c) and isComplete(n.r,2*index+2,c)   
+def BalancedBinaryTree(n):
+    if n is None:
+        return 1
+    
+    left_height = H(n.l)
+    right_height = H(n.r)
+    
+    if abs(left_height - right_height) > 1:
+        return 0
+    
+    return BalancedBinaryTree(n.l) and BalancedBinaryTree(n.r)
+        
 
-    def postorder(self, node):
-        if node:
-            self.postorder(node.left)
-            self.postorder(node.right)
-            print(node.element, end=' ')
+r = Node(1)
+r.l=Node(2)
+r.r=Node(3)
+r.l.l=Node(4)
+r.l.r=Node(5)
+r.r.l=Node(6)
+r.r.r=Node(7)
 
-    def count_nodes(self, node):
-        if node is None:
-            return 0
-        return 1 + self.count_nodes(node.left) + self.count_nodes(node.right)
-
-    def calculate_height(self, node):
-        if node is None:
-            return 0
-        left_height = self.calculate_height(node.left)
-        right_height = self.calculate_height(node.right)
-        return 1 + max(left_height, right_height)
-
-# Example usage
-x = BinaryTree()
-y = BinaryTree()
-z = BinaryTree()
-r = BinaryTree()
-s = BinaryTree()
-t = BinaryTree()
-
-x.maketree(40)
-y.maketree(60)
-z.maketree(20, x)
-r.maketree(50, right_tree=y)
-s.maketree(30, r)
-t.maketree(10, z, s)
-
-# Traversals
-print('Inorder Traversal')
-t.inorder(t.root)
-print()
-
-print('Preorder Traversal')
-t.preorder(t.root)
-print()
-
-print('Postorder Traversal')
-t.postorder(t.root)
-print()
-
-# Counting nodes
-total_nodes = t.count_nodes(t.root)
-print(f'Total number of nodes: {total_nodes}')
-
-# Calculating height
-tree_height = t.calculate_height(t.root)
-print(f'Height of the tree: {tree_height}')
+print(IN(r))
+print(PRE(r))
+print(POST(r))
+print(c(r))
+print(H(r))
+print(isFull(r))
+print(isPerfect(r,H(r)))
+index=0
+print(isComplete(r,index,c(r)))
+print(BalancedBinaryTree(r))
